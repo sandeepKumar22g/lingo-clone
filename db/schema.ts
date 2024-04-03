@@ -20,10 +20,26 @@ export const units = pgTable("units", {
     order: integer("order").notNull(),
 })
 
-const unitRelations = relations(units, ({many, one})=>({
+export const unitsRelations = relations(units, ({many, one})=>({
     course: one(courses, {
         fields: [units.courseId],
         references: [courses.id]
+    }),
+    lessions: many(lessions)
+
+}))
+
+export const lessions = pgTable("lessions", {
+    id: serial("id").primaryKey(),
+    title: text("title").notNull(),
+    unitId: integer("unit_id").references(()=>  units.id, {onDelete: "cascade"}).notNull(),
+    order: integer("order").notNull()
+})
+
+export const lessionsRelations = relations(lessions, ({one, many})=>({
+    unit: one(units, {
+        fields: [lessions.unitId],
+        references: [units.id]
     })
 }))
 
